@@ -1,32 +1,74 @@
-.App {
-  text-align: center;
+body {
+	background: #09f;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
+.board {
+	background: #fff;
+	border-collapse: collapse;
+	text-align: center;
+	vertical-align: middle;
+	border: 4px solid #ccc;
+	margin: 50px auto;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.board .cell {
+	border: 1px solid #ccc;
+	position: relative;
 }
 
-.App-link {
-  color: #61dafb;
+.board .cell.isNull {
+	background: #ccc;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.board .cell .startCell, .board .cell .endCell {
+	display: inline-block;
+	background: #f66;
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	vertical-align: middle;
+}
+
+.board .cell .line-up {
+	display: block;
+	width: 4px;
+	height: 50px;
+	background: #6f9;
+	position: absolute;
+	bottom: 50%;
+	left: calc(50% - 2px);
+	z-index: 100;
+}
+
+.board .cell .line-down {
+	display: block;
+	width: 4px;
+	height: 50px;
+	background: #6f9;
+	position: absolute;
+	top: 50%;
+	left: calc(50% - 2px);
+	z-index: 100;
+}
+
+.board .cell .line-left {
+	display: block;
+	width: 50px;
+	height: 4px;
+	background: #6f9;
+	position: absolute;
+	right: 50%;
+	top: calc(50% - 2px);
+	z-index: 100;
+}
+
+.board .cell .line-right {
+	display: block;
+	width: 50px;
+	height: 4px;
+	background: #6f9;
+	position: absolute;
+	left: 50%;
+	top: calc(50% - 2px);
+	z-index: 100;
 }
