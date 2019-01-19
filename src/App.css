@@ -29,6 +29,10 @@ body {
 	vertical-align: middle;
 }
 
+.board .cell .startCell {
+	background: #f93;
+}
+
 .board .cell .line-up {
 	display: block;
 	width: 4px;

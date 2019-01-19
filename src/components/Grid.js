@@ -8,17 +8,29 @@ class Grid extends Component {
         this.state = {
             size: 8,
             grid: [],
-            startCell: [6, 4],
-            endCell: [7, 6]
+            startCell: null,
+            endCell: null,
+            p: {},
+            startRadio: true,
+            endRadio: false,
+            blockRadio: false,
+            blocks: []
         };
+
+        this._start = this._start.bind(this);
+        this.handleChangeSize = this.handleChangeSize.bind(this);
+        this.handleClickCell = this.handleClickCell.bind(this);
+        this.handleStartRadio = this.handleStartRadio.bind(this);
+        this.handleEndRadio = this.handleEndRadio.bind(this);
+        this.handleBlockRadio = this.handleBlockRadio.bind(this);
     }
 
     componentWillMount(){
-        this._initGrid();
+        this._initGrid(8);
     }
 
-    _initGrid(){
-        let { grid, size } = this.state;
+    _initGrid(size){
+        let grid = [];
 
         for(let i=0; i < size; i++){
             grid[i] = [];
@@ -27,11 +39,11 @@ class Grid extends Component {
             }
         }
         
-        grid[3][4] = null;
-        grid[4][4] = null;
-        grid[5][4] = null;
-        grid[6][5] = null;
-        grid[7][5] = null;
+        // grid[3][4] = null;
+        // grid[4][4] = null;
+        // grid[5][4] = null;
+        // grid[6][5] = null;
+        // grid[7][5] = null;
 
         this.setState({ grid });
     }
@@ -173,8 +185,53 @@ class Grid extends Component {
         return tmp;
     }
 
+    handleChangeSize(e){
+        this.setState(
+            { size: e.target.value },
+            () => {
+                this._initGrid(this.state.size);
+            }
+        );
+    }
+
+    handleClickCell(cell){
+        let { grid, startRadio, endRadio, blockRadio, blocks } = this.state;
+
+        if(startRadio){
+            this.setState({ startCell: cell });
+        }
+
+        if(endRadio){
+            this.setState({ endCell: cell });
+        }
+
+        if(blockRadio){
+            grid[cell[0]][cell[1]] = null;
+            blocks.push(`${cell[0]}_${cell[1]}`);
+            this.setState({ grid, blocks });
+        }
+    }
+
+    handleStartRadio(){
+        this.setState({ startRadio: true, endRadio: false, blockRadio: false });
+    }
+
+    handleEndRadio(){
+        this.setState({ startRadio: false, endRadio: true, blockRadio: false });
+    }
+
+    handleBlockRadio(){
+        this.setState({ startRadio: false, endRadio: false, blockRadio: true });
+    }
+
+    _start(){
+        const { grid, startCell, endCell } = this.state;
+        const p = this._minimumMoves(grid, startCell, endCell);
+        this.setState({ p });
+    }
+
 	render() {
-        const { grid, size, startCell, endCell } = this.state;
+        const { grid, size, startCell, endCell, p, startRadio, endRadio, blockRadio, blocks } = this.state;
         const styles = {
             grid: {
                 width: size * 50
@@ -184,7 +241,6 @@ class Grid extends Component {
                 height: 50
             }
         };
-        const p = this._minimumMoves(grid, startCell, endCell);
 
 		return (
 			<div className="grid-wrapper">
@@ -200,15 +256,16 @@ class Grid extends Component {
                                         return(
                                             <td 
                                                 key={j}
-                                                className={cell ? 'cell' : 'cell isNull'} 
+                                                className={blocks.indexOf(key) > -1 ? 'cell isNull' : 'cell'} 
                                                 style={styles.cell}
+                                                onClick={() => this.handleClickCell([i, j])}
                                             >
                                                 {
-                                                    i === startCell[0] && j === startCell[1] &&
+                                                    startCell && i === startCell[0] && j === startCell[1] &&
                                                     <span className='startCell'></span>
                                                 }
                                                 {
-                                                    i === endCell[0] && j === endCell[1] &&
+                                                    endCell && i === endCell[0] && j === endCell[1] &&
                                                     <span className='endCell'></span>
                                                 }
                                                 {
@@ -236,7 +293,26 @@ class Grid extends Component {
                     }
                     </tbody>
                 </table>
-			</div>
+			
+                <div className='options-area'>
+                    <input type='text' className='sizeNumber' onChange={this.handleChangeSize} />
+                    <div>
+                        <div>
+                            <span>Start Point</span>
+                            <input type='radio' name='cellType' className='cellType' defaultChecked={startRadio} onClick={this.handleStartRadio} />
+                        </div>
+                        <div>
+                            <span>End Point</span>
+                            <input type='radio' name='cellType' className='cellType' defaultChecked={endRadio} onClick={this.handleEndRadio} />
+                        </div>
+                        <div>
+                            <span>Block</span>
+                            <input type='radio' name='cellType' className='cellType' defaultChecked={blockRadio} onClick={this.handleBlockRadio} />
+                        </div>
+                        <button className='btn-start' onClick={this._start}>Find Path</button>
+                    </div>
+                </div>
+            </div>
 		);
 	}
 }
