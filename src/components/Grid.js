@@ -47,16 +47,18 @@ class Grid extends Component {
             currentCell = queue[0];
             queue = queue.slice(1);
             const a = this._findValidCell(grid, currentCell, prev);
-
             if(!this._isFound(a, endCell)){
                 for(let i=0, len=a.length; i < len; i++){
                     queue.push(a[i]);
                 }
             }
+            else {
+                break;
+            }
         }
-
-        const p = this._traceBack(prev, endCell);
-        return this._formatP(p);
+        
+        const p = this._trace(prev, endCell);
+        return this._getPath(prev, p);
     }
 
     _findValidCell(grid, loc, prev){
@@ -74,7 +76,7 @@ class Grid extends Component {
                     if(newCost < prev[fmLoc][2]){
                         prev[fmLoc] = [[loc[0], loc[1], newCost]];
                     }
-                    else if(newCost === prev[fmLoc][2]){
+                    else if(newCost === prev[fmLoc][0][2]){
                         prev[fmLoc].push([loc[0], loc[1], newCost]);
                     }
                 }
@@ -84,53 +86,28 @@ class Grid extends Component {
                 }
             }
         });
-
+        
         return tmp;
     }
 
-    _traceBack(prev, endCell){
-        let tmp = [];
-        let currentCell = endCell;
+    _trace(prev, endCell){
+        let tmp = [endCell];
+        let stack = [endCell];
+        let checked = [`${endCell[0]}_${endCell[1]}`];
+        
+        while(stack.length > 0){
+            const currentCell = stack.pop();
+            const key = `${currentCell[0]}_${currentCell[1]}`;
 
-        while(1){
-            const fmLoc = `${currentCell[0]}_${currentCell[1]}`;
-            const prevLoc = prev[fmLoc][0];
-            let fmData = `${prevLoc[0]}_${prevLoc[1]}`;
-            
-            if(fmLoc === fmData){
-                break;
-            }
-            else {
-                if(prevLoc[0] - currentCell[0] === 0){
-                    if(prevLoc[1] - currentCell[1] < 0){
-                        fmData += '_LEFT';
-                    }
-                    if(prevLoc[1] - currentCell[1] > 0){
-                        fmData += '_RIGHT';
-                    }
+            for(let i=0, len=prev[key].length; i<len; i++){
+                const k = `${prev[key][i][0]}_${prev[key][i][1]}`;
+                if(checked.indexOf(k) < 0){
+                    tmp.push(prev[key][i]);
+                    stack.push(prev[key][i]);
+                    checked.push(k);
                 }
-                if(prevLoc[1] - currentCell[1] === 0){
-                    if(prevLoc[0] - currentCell[0] < 0){
-                        fmData += '_UP';
-                    }
-                    if(prevLoc[0] - currentCell[0] > 0){
-                        fmData += '_DOWN';
-                    }
-                }
-                tmp.push(fmData);
             }
-
-            currentCell = prevLoc;
         }
-
-        return tmp;
-    }
-
-    _trace(prev, endCell, tmp=[]){
-        let currentCell = endCell;
-
-        const key = `${currentCell[0]}_${currentCell[1]}`;
-        prev[key].forEach(item => tmp.push(item));
 
         return tmp;
     }
@@ -159,15 +136,39 @@ class Grid extends Component {
         }
     }
 
-    _formatP(p){
+    _getDirectionByCell(prev, cell){
+        let tmp = [];
+        const key = `${cell[0]}_${cell[1]}`;
+
+        for(let i=0, len=prev[key].length; i<len; i++){
+            if(cell[0] - prev[key][i][0] === 0){
+                if(cell[1] - prev[key][i][1] < 0){
+                    tmp.push('LEFT');
+                }
+                if(cell[1] - prev[key][i][1] > 0){
+                    tmp.push('RIGHT');
+                }
+            }
+            if(cell[1] - prev[key][i][1] === 0){
+                if(cell[0] - prev[key][i][0] < 0){
+                    tmp.push('UP');
+                }
+                if(cell[0] - prev[key][i][0] > 0){
+                    tmp.push('DOWN');
+                }
+            }    
+        }
+        
+        return tmp;
+    }
+
+    _getPath(prev, p){
         let tmp = {};
 
-        p.forEach(item => {
-            item = item.split('_');
-            const key = `${item[0]}_${item[1]}`;
-            const [,, ...rest] = item;
-            tmp[key] = rest;
-        });
+        for(let i=0, len=p.length; i<len; i++){
+            const key = `${p[i][0]}_${p[i][1]}`;
+            tmp[key] = this._getDirectionByCell(prev, p[i]);
+        }
 
         return tmp;
     }
