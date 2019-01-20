@@ -2,7 +2,7 @@
   "name": "castle_on_the_grid",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://buyubaya.github.io/castle_on_the_grid",
+  "homepage": "https://buyubaya.github.io/castle_on_the_grid/",
   "dependencies": {
     "gh-pages": "^2.0.1",
     "react": "^16.7.0",
