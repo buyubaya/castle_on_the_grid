@@ -4,19 +4,19 @@ self.__precacheManifest = [
     "url": "/castle_on_the_grid/static/js/runtime~main.cc5d9e1d.js"
   },
   {
-    "revision": "dc0061a00f99fa2e34c1",
-    "url": "/castle_on_the_grid/static/js/main.dc0061a0.chunk.js"
+    "revision": "510708fc69887c4eb6e5",
+    "url": "/castle_on_the_grid/static/js/main.510708fc.chunk.js"
   },
   {
     "revision": "0618129449fa37b7aae9",
     "url": "/castle_on_the_grid/static/js/1.06181294.chunk.js"
   },
   {
-    "revision": "dc0061a00f99fa2e34c1",
-    "url": "/castle_on_the_grid/static/css/main.1cfbb070.chunk.css"
+    "revision": "510708fc69887c4eb6e5",
+    "url": "/castle_on_the_grid/static/css/main.e6008035.chunk.css"
   },
   {
-    "revision": "89d0ba33380d4dc15c007543a4542f2f",
+    "revision": "d6febba83dee41588c97a6ca84222697",
     "url": "/castle_on_the_grid/index.html"
   }
 ];
